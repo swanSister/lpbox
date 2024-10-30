@@ -4,6 +4,7 @@
   <div class="input-list">
     <div><span class="title">제목</span> <input v-model="name"/></div>
     <div><span class="title">가수</span> <input v-model="singer"/></div>
+    <div class="more-btn" v-on:click="goToGoogle(`${name} ${singer}`)">정보 검색</div>
     <div><span class="title">장르</span> 
       <select class="genre-list" v-model="genre" id="genreList">
         <option value="none" selected="selected">=== 선택 ===</option>
@@ -76,6 +77,12 @@ export default {
     }
   },
   methods:{
+    goToGoogle(title){
+      var encodedComponent = encodeURIComponent(title);
+      var googleSafeComponent = encodedComponent.replace(/%20/g,'+');  
+      console.log(`https://www.google.com/search?q=${googleSafeComponent}`)
+      window.location=`https://www.google.com/search?q=${googleSafeComponent}`
+    },
     generateUID() {
       var firstPart = (Math.random() * 46656) | 0;
       var secondPart = (Math.random() * 46656) | 0;
@@ -197,9 +204,17 @@ export default {
   margin: 1vw 4vw;
 }
 
-.input-list >div{
+.input-list > div{
   display:flex;
   margin:2vw 0;
+}
+.input-list > div.more-btn{
+  color:white;
+  justify-content: center;
+  border-radius: 10vw;
+  background-color: rgba(123,86,72,.7);
+  margin:2vw 10vw;
+  padding: 1vw 0;
 }
 .input-list > div > .title{
   min-width: 30vw;
@@ -222,6 +237,7 @@ flex-grow: 1;
   padding: 2vw 0;
   border-radius: 10vw;
   background-color: rgb(123,86,72);
+  font-size:6vw;
 }
 .input-list .desc{
   border : 0.5px solid rgba(0,0,0,0.5) ;
@@ -253,4 +269,5 @@ flex-grow: 1;
   object-fit: cover;
   border : 0.5px solid rgba(0,0,0,0.5);
 }
+
 </style>
