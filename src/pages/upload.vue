@@ -31,7 +31,7 @@
       <textarea class="desc" v-model="description"></textarea>
     </div>
     <input ref="fileInput" id="file" type="file" accept="image/*" @change="previewFiles" style="display:none;"/>
-    <label for="file" class="icon icon-camera"></label>
+    <label for="file" class="icon icon-camera" style="font-size: 10vw; text-align: center;margin-top:4vw;"></label>
     <img v-if="imgList.length>0" :src="imgList[0]"/>
     </div>
     <div class="send-btn" @click="uploadData">전송</div>
@@ -92,6 +92,7 @@ export default {
           let imgRes = await this.$.components.api.uploadLPImage(this.dataUriToBlob(this.imgList[i]),`${this.lpId}_${i}_post`)
           console.log("imgres : ",imgRes)
         }
+        this.$router.push('main')
       }else{
         console.log("fail!!")
           console.error(writingRes)
