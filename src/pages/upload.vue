@@ -152,7 +152,7 @@ export default {
     resizeImage(image){
       console.log("resizeImages")
       let canvas = document.createElement("canvas"),
-      max_size = 1000,
+      max_size = 300,
       // 최대 기준을 1280으로 잡음.
       width = image.width,
       height = image.height;
