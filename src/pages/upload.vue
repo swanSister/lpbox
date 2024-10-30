@@ -19,21 +19,32 @@
     </div>
     <div>
       <span class="title">발매일</span> 
-        <div @click="isPickerShow=true">{{ getTime(releaseDate) }}
+        <div class="release-date" @click="isPickerShow=true">{{ releaseDate? getTime(releaseDate) : '-' }}
       </div>
       <div class="date-picker" v-show="isPickerShow">
         <VDatePicker v-model='releaseDate' @click="isPickerShow=false"/>
       </div>
     </div>
-    <div><span class="title" type='number'>가격</span> <input v-model="price"/></div>
+    <div><span class="title" type='number'>가격</span>
+      <select class="price-list" v-model="price" id="priceList">
+        <option value="~50,000">~50,000</option>
+        <option value="~100,000">~100,000</option>
+        <option value="~200,000">~200,000</option>
+        <option value="~500,000">~500,000</option>
+        <option value="~1,000,000">~1,000,000</option>
+        <option value="1,000,000~">1,000,000~</option>
+      </select>
+    </div>
     <div>
       <span class="title">설명</span> 
       <textarea class="desc" v-model="description"></textarea>
     </div>
-    <input ref="fileInput" id="file" type="file" accept="image/*" @change="previewFiles" style="display:none;"/>
-    <label for="file" class="icon icon-camera" style="font-size: 10vw; text-align: center;margin-top:4vw;"></label>
-    <img v-if="imgList.length>0" :src="imgList[0]"/>
+    <div class="img-input">
+      <input ref="fileInput" id="file" type="file" accept="image/*" @change="previewFiles" style="display:none;"/>
+      <label for="file" class="icon icon-camera"></label>
+      <img v-if="imgList.length>0" :src="imgList[0]"/>
     </div>
+  </div>
     <div class="send-btn" @click="uploadData">전송</div>
   </div>
 </template>
@@ -56,7 +67,7 @@ export default {
       lpId : '',
       name : '',
       singer: '',
-      releaseDate : new Date(),
+      releaseDate : '',
       description : '',
       price : '',
       genre : '',
@@ -75,6 +86,12 @@ export default {
     async uploadData(){
       this.lpId = this.generateUID()
       console.log("######",this.$.components.api)
+      if(this.name==''){ alert("제목을 입력해 주세요."); return;}
+      if(this.singer==''){ alert("가수를 입력해 주세요."); return;}
+      if(this.releaseDate==''){ alert("발매일을 입력해 주세요."); return;}
+      if(this.price==''){ alert("가격을 입력해 주세요."); return;}
+      if(this.genre==''){ alert("장르를 입력해 주세요."); return;}
+
       let writingRes = await this.$.components.api.createLp({
         lpId: this.lpId,
         name: this.name,
@@ -190,7 +207,7 @@ export default {
   border-right: 0.5px solid rgba(0,0,0,0.5) ;
   margin-right:2vw;
 }
-.input-list >div > .genre-list{
+.input-list >div > .genre-list, .input-list > div > .price-list{
   border:0.5px solid rgba(0,0,0,0.5) ;
 flex-grow: 1;
 }
@@ -213,5 +230,27 @@ flex-grow: 1;
 .date-picker{
   position:absolute;
   right:4vw;
+}
+.release-date{
+  min-width:50vw;
+}
+.img-input{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+.img-input .icon-camera{
+  font-size:8vw; 
+  text-align: center;
+  margin-right:10vw;
+}
+.img-input > img{
+  min-width: 50vw;
+  max-width: 50vw;
+  min-height: 50vw;
+  max-height: 50vw;
+
+  object-fit: cover;
+  border : 0.5px solid rgba(0,0,0,0.5);
 }
 </style>

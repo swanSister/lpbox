@@ -8,10 +8,6 @@
             <img class="lp-img none" v-else/>
             <div class="content">
               <div>
-                <span class="title">생성일</span>
-                <span>{{getTime(item.createdAt)}}</span>
-              </div>
-              <div>
                 <span class="title">제목</span>
                 <span>{{item.name}}</span>
               </div>
@@ -21,7 +17,7 @@
               </div>
               <div>
                 <span class="title">발매일</span>
-                <span>{{item.releaseDate}}</span>
+                <span>{{getTime(item.releaseDate)}}</span>
               </div>
               <div>
                 <span class="title">설명</span>
@@ -84,10 +80,12 @@ export default {
     },
     getTime(t){
       let curr = new Date()
-      let utc = curr.getTime() + (curr.getTimezoneOffset() * 60 * 1000)
-      let time = new Date(t)
+      let time = new Date(t).getTime() + (curr.getTimezoneOffset() * 60 * 1000);
+      let year = new Date(time).getFullYear()
+      let month = new Date(time).getMonth()+1
+      let date = new Date(time).getDate()
 
-      return time.getTime() + (curr.getTimezoneOffset() * 60 * 1000);
+      return `${year}-${month}-${date}`
       // let today = this.$moment().format('YYYYMMDD')
       // let day = this.$moment(time).format('YYYYMMDD')
       // let yesterday = this.$moment().subtract(1, 'days').format('YYYYMMDD')
@@ -122,13 +120,18 @@ export default {
 
 li{
   list-style: none;
+  border-bottom : 0.5px solid rgba(0,0,0,0.5);
+  padding-bottom: 3vw;
 }
 .lp-list{
   font-size:4vw;
   color:rgb(91,79,67);
-  padding : 2vw;
+  padding : 1vw;
   display:flex;
   flex-direction: column;
+}
+.card{
+  align-items: center;
 }
 .lp-list > li{
   margin-bottom: 4vw;  
@@ -138,12 +141,12 @@ li{
   margin-bottom: 2vw;
 }
 .lp-list .lp-img{
-  min-width: 30vw;
-  max-width: 30vw;
-  min-height: 30vw;
-  max-height: 30vw;
+  min-width: 25vw;
+  max-width: 25vw;
+  min-height: 25vw;
+  max-height: 25vw;
 
-  object-fit: contain;
+  object-fit: cover;
   border : 0.5px solid rgba(0,0,0,0.5);
 }
 .lp-list .lp-img.none{
@@ -152,10 +155,8 @@ li{
 .lp-list .content{
   display:flex;
   flex-direction: column;
-  width:60vw;
   margin-left:2vw;
   justify-content: center
-  
 }
 .lp-list .content > div{
   display:flex;
