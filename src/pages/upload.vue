@@ -23,7 +23,7 @@
         <div class="release-date" @click="isPickerShow=true">{{ releaseDate? getTime(releaseDate) : '-' }}
       </div>
       <div class="date-picker" v-show="isPickerShow">
-        <VDatePicker v-model='releaseDate' @click="isPickerShow=false"/>
+        <VDatePicker v-model='releaseDate' @dayclick="isPickerShow=false" mode='month'/>
       </div>
     </div>
     <div><span class="title" type='number'>가격</span>
@@ -174,13 +174,9 @@ export default {
       return dataUrl
     },
     getTime(t){
-      let curr = new Date()
-      let utc = curr.getTime() + (curr.getTimezoneOffset() * 60 * 1000)
       let time = new Date(t)
-
-      time = time.getTime() + (curr.getTimezoneOffset() * 60 * 1000);
-      let year = new Date(time).getFullYear()
-      let month = new Date(time).getMonth()+1
+      let year = time.getFullYear()
+      let month = time.getMonth()+1
       if(month<10){
         month = `0${month}`
       }
@@ -258,13 +254,13 @@ flex-grow: 1;
 .img-input .icon-camera{
   font-size:8vw; 
   text-align: center;
-  margin-right:10vw;
 }
 .img-input > img{
   min-width: 50vw;
   max-width: 50vw;
   min-height: 50vw;
   max-height: 50vw;
+  margin-left:10vw;
 
   object-fit: cover;
   border : 0.5px solid rgba(0,0,0,0.5);
