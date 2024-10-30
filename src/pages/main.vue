@@ -132,11 +132,11 @@ export default {
       let that = this
       this.lpList = this.lpList_org.filter(function(e){
         if(that.searchOption == 'name'){
-          if(e.name.includes(that.keyword)) return true;  
+          if(e.name.toUpperCase().includes(that.keyword.toUpperCase())) return true;  
         }else if(that.searchOption == 'singer'){
-          if(e.singer.includes(that.keyword)) return true;  
+          if(e.singer.toUpperCase().includes(that.keyword.toUpperCase())) return true;  
         }else if(that.searchOption == 'genre'){
-          if(e.genre.includes(that.searchGenreOption)) return true;  
+          if(e.genre.toUpperCase().includes(that.searchGenreOption.toUpperCase())) return true;  
         }
       })
     },  
