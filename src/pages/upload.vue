@@ -81,7 +81,7 @@ export default {
       var encodedComponent = encodeURIComponent(title);
       var googleSafeComponent = encodedComponent.replace(/%20/g,'+');  
       console.log(`https://www.google.com/search?q=${googleSafeComponent}`)
-      window.location=`https://www.google.com/search?q=${googleSafeComponent}`
+      window.open=`https://www.google.com/search?q=${googleSafeComponent}`
     },
     generateUID() {
       var firstPart = (Math.random() * 46656) | 0;
