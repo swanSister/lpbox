@@ -29,6 +29,30 @@ export default {
       }
     })
   },
+  updateLp:function(param){
+    console.log(param)
+      return axios.post(`${API_URL}/lp/updateById`,param,{
+        headers: {
+          accept: 'application/json',
+        }
+      })
+  },
+  deleteLp:function(param){
+    console.log(param)
+      return axios.post(`${API_URL}/lp/deleteById`,param,{
+        headers: {
+          accept: 'application/json',
+        }
+      })
+  },
+  deleteImg:function(param){
+    console.log(param)
+      return axios.post(`${API_URL}/lp/deleteImgById`,param,{
+        headers: {
+          accept: 'application/json',
+        }
+      })
+  },
  
 }
 </script>

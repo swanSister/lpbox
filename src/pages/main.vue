@@ -26,7 +26,7 @@
       <div class="lp-list">
         <div v-if="lpList.length>0">{{ lpList.length }}개</div>
         <li v-for="item in lpList" :key="item.lpId">
-          <div class="card">
+          <div class="card" @click="goEdit(item)">
             <img class="lp-img" v-if=item.imgList[0] :src='item.imgList[0]'/>
             <img class="lp-img none" v-else/>
             <div class="content">
@@ -159,6 +159,13 @@ export default {
       else if(genre == 'ROCK') return '락'
       else if(genre == 'OST') return 'O.S.T'
       else if(genre == 'ETC') return '기타'
+    },
+    goEdit(lp){
+
+      this.$router.push({
+        name : 'edit',
+          params : lp
+      })
     }
   },
   mounted(){
@@ -239,6 +246,8 @@ li{
 }
 .lp-list .content > div{
   display:flex;
+  flex-wrap: wrap;
+  overflow-wrap: break-word;
 }
 .lp-list .content > div > .title{
   min-width: 13vw;
@@ -246,8 +255,10 @@ li{
   border-right: 0.5px solid rgba(0,0,0,0.5) ;
 }
 .lp-list .content > div > span{
- display: flex;
  margin-left: 2vw;
+ width:40vw;
+ overflow-wrap: break-word;
+ margin-bottom: .5vw;
 }
 .lp-list .more-btn{
   color:white;

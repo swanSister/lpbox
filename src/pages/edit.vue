@@ -46,7 +46,8 @@
       <img v-if="imgList.length>0" :src="imgList[0]"/>
     </div>
   </div>
-    <div class="send-btn" @click="uploadData">전송</div>
+    <div class="send-btn" @click="uploadData">편집</div>
+    <div class="delete-btn" @click="deleteLp">삭제</div>
   </div>
 </template>
 
@@ -73,6 +74,8 @@ export default {
       price : '',
       genre : '',
       imgList : [],
+      imgListOrigin : [],
+      selectedImgList:[],
       isPickerShow:false,
     }
   },
@@ -83,23 +86,15 @@ export default {
       console.log(`https://www.google.com/search?q=${googleSafeComponent}`)
       window.location=`https://www.google.com/search?q=${googleSafeComponent}`
     },
-    generateUID() {
-      var firstPart = (Math.random() * 46656) | 0;
-      var secondPart = (Math.random() * 46656) | 0;
-      firstPart = ("000" + firstPart.toString(36)).slice(-3);
-      secondPart = ("000" + secondPart.toString(36)).slice(-3);
-      return firstPart + secondPart;
-    },
     async uploadData(){
-      this.lpId = this.generateUID()
       console.log("######",this.$.components.api)
       if(this.name==''){ alert("제목을 입력해 주세요."); return;}
       if(this.singer==''){ alert("가수를 입력해 주세요."); return;}
       if(this.releaseDate==''){ alert("발매일을 입력해 주세요."); return;}
       if(this.price==''){ alert("가격을 입력해 주세요."); return;}
       if(this.genre==''){ alert("장르를 입력해 주세요."); return;}
-
-      let writingRes = await this.$.components.api.createLp({
+      console.log("uploadData!!!",this.name)
+      let writingRes = await this.$.components.api.updateLp({
         lpId: this.lpId,
         name: this.name,
         singer: this.singer,
@@ -107,26 +102,47 @@ export default {
         description: this.description,
         price: this.price,
         genre: this.genre,
-        imgList: [],
+        imgList: this.imgList,
       })
+
       if(writingRes.status == 200){
-        console.log("success!!!")
-      for(let i = 0; i<this.imgList.length; i++){
-          console.log("#####",i)
-          let imgRes = await this.$.components.api.uploadLPImage(this.dataUriToBlob(this.imgList[i]),`${this.lpId}_${i}_post`)
-          console.log("imgres : ",imgRes)
+        if(this.selectedImgList.length>0){
+          writingRes = await this.$.components.api.deleteImg({
+            lpId: this.lpId,
+            imgList:this.imgListOrigin
+          })
+          if(writingRes.status == 200){
+            this.imgList = this.selectedImgList
+            for(let i = 0; i<this.imgList.length; i++){
+                let imgRes = await this.$.components.api.uploadLPImage(this.dataUriToBlob(this.imgList[i]),`${this.lpId}_${i}_post`)
+            }
+            this.selectedImgList = []
+          }
         }
         this.$router.push('main')
       }else{
         console.log("fail!!")
           console.error(writingRes)
           console.log("eeeerror")
-          
         }
+    },
+    async deleteLp(){
+      let isDelete = confirm('삭제하시겠습니까?')
+      if(isDelete){
+        let writingRes = await this.$.components.api.deleteLp({
+          lpId: this.lpId,
+          imgList:this.imgListOrigin
+        })
+        if(writingRes.status == 200){
+          this.$router.push('main')
+        }else{
+          console.log(writingRes.error)
+        }
+      }
     },
     async previewFiles(event) {
       let that = this
-      that.imgList = []
+      this.selectedImgList = []
       var oFReader = new FileReader()
         oFReader.readAsDataURL(event.target.files[0])
         oFReader.onload = function (oFREvent) {
@@ -134,7 +150,8 @@ export default {
               image.src= oFREvent.target.result
               image.onload = function(){
                 let src = that.resizeImage(image)
-                that.imgList.push(src)
+                that.selectedImgList.push(src)
+                that.imgList = that.selectedImgList
               }
         };
     },
@@ -185,9 +202,20 @@ export default {
       // let year = this.$moment().format('YYYY')
     
     },
-    
   },
   mounted(){
+    console.log(this.$route.params)
+
+    let lp = this.$route.params
+    this.lpId = lp.lpId ? lp.lpId : ''
+    this.name = lp.name ? lp.name : ''
+    this.singer = lp.singer ? lp.singer : ''
+    this.releaseDate = lp.releaseDate ? lp.releaseDate : ''
+    this.description = lp.description ? lp.description : ''
+    this.price = lp.price ? lp.price : ''
+    this.genre = lp.genre ? lp.genre : ''
+    this.imgList = lp.imgList ? lp.imgList : []
+    this.imgListOrigin = lp.imgList ? lp.imgList : []
   }
 }
 </script>
@@ -226,14 +254,14 @@ flex-grow: 1;
   border:0.5px solid rgba(0,0,0,0.5) ;
   flex-grow: 1;
 }
-.send-btn{
+.send-btn, .delete-btn{
   color:white;
   text-align: center;
   margin:2vw 20vw;
   padding: 2vw 0;
   border-radius: 10vw;
   background-color: rgb(123,86,72);
-  font-size:6vw;
+  font-size:4vw;
 }
 .input-list .desc{
   border : 0.5px solid rgba(0,0,0,0.5) ;
