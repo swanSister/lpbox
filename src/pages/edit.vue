@@ -204,9 +204,7 @@ export default {
     },
   },
   mounted(){
-    console.log(this.$route.params)
-
-    let lp = this.$route.params
+    let lp = JSON.parse(window.localStorage.getItem("lp"))
     this.lpId = lp.lpId ? lp.lpId : ''
     this.name = lp.name ? lp.name : ''
     this.singer = lp.singer ? lp.singer : ''

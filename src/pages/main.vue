@@ -164,9 +164,9 @@ export default {
 
       this.$router.push({
         path : 'edit',
-        name : 'edit',
-          params : lp
+        name : 'edit'
       })
+      window.localStorage.setItem("lp",JSON.stringify(lp))
     }
   },
   mounted(){
