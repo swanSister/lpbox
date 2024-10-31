@@ -1,10 +1,11 @@
-import { createWebHistory, createRouter } from 'vue-router'
+import { createWebHashHistory, createRouter } from 'vue-router'
 import Main from '../pages/main.vue'
 import Upload from '../pages/upload.vue'
 import Test from '../pages/test.vue'
 import Edit from '../pages/edit.vue'
 
 const routes = [
+
   {
     path: '/',
     component: Main
@@ -34,7 +35,7 @@ const routes = [
 ]
 
 export const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),  
   routes,
 });
 
