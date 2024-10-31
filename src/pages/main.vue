@@ -163,6 +163,7 @@ export default {
     goEdit(lp){
 
       this.$router.push({
+        path : 'edit',
         name : 'edit',
           params : lp
       })
