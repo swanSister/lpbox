@@ -1,5 +1,7 @@
 <template>
   <div class="header">
+    
+    <span class="back-btn icon-left-open" v-on:click="this.$router.go(-1)"></span>
     LP BOX
     <span class="add-btn icon-plus" v-on:click="this.$router.push('upload')"></span>
   </div>
@@ -36,8 +38,13 @@ export default {
   margin-bottom: 2vw;
 }
 .header .add-btn{
+  color:rgb(91,79,67);
   font-size:8vw;
   position:absolute; right:2vw;
 }
-
+.header .back-btn{
+  color:rgb(91,79,67);
+  font-size:8vw;
+  position:absolute; left:2vw;
+}
 </style>
