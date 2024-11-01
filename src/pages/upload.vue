@@ -4,7 +4,10 @@
   <div class="input-list">
     <div><span class="title">제목</span> <input v-model="name"/></div>
     <div><span class="title">가수</span> <input v-model="singer"/></div>
-    <div class="more-btn" v-on:click="goToGoogle(`${name} ${singer}`)">정보 검색</div>
+    <div>
+      <span class="title">정보</span>
+      <div class="more-btn" v-on:click="goToGoogle(`${name} ${singer}`)">정보 검색</div>
+    </div>
     <div><span class="title">장르</span> 
       <select class="genre-list" v-model="genre" id="genreList">
         <option value="none" selected="selected">=== 선택 ===</option>
@@ -66,6 +69,8 @@ export default {
   data () {
     return {
       lpId : '',
+      user:'',
+      userId : '',
       name : '',
       singer: '',
       releaseDate : '',
@@ -90,7 +95,24 @@ export default {
       secondPart = ("000" + secondPart.toString(36)).slice(-3);
       return firstPart + secondPart;
     },
+    checkLogin(){
+      if(!this.user.isAuth){
+        let pw = prompt(`ID:${this.user.id} 비밀번호를 입력하세요`,'')
+        if(pw==this.user.pw){
+          this.user.isAuth = true
+          window.localStorage.setItem('user',JSON.stringify(this.user))
+          return true
+        }else{
+          alert("비밀번호가 틀렸습니다.")
+          this.$router.go(-1)
+          return false
+        }
+      }else{
+        return true
+      }
+    },
     async uploadData(){
+      if(!this.checkLogin()) return
       this.lpId = this.generateUID()
       console.log("######",this.$.components.api)
       if(this.name==''){ alert("제목을 입력해 주세요."); return;}
@@ -101,6 +123,7 @@ export default {
 
       let writingRes = await this.$.components.api.createLp({
         lpId: this.lpId,
+        userId: this.user.userId,
         name: this.name,
         singer: this.singer,
         releaseDate: this.releaseDate,
@@ -188,6 +211,14 @@ export default {
     
   },
   mounted(){
+    this.user = JSON.parse(window.localStorage.getItem('user'))
+    if(!(this.user&&this.user.userId)){
+      alert("사용자를 선택해 주세요.")
+      this.$router.push({
+        path : 'login',
+        name : 'login'
+      })
+    }
   }
 }
 </script>

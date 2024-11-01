@@ -1,5 +1,6 @@
 import { createWebHashHistory, createRouter } from 'vue-router'
 import Main from '../pages/main.vue'
+import Login from '../pages/login.vue'
 import Upload from '../pages/upload.vue'
 import Test from '../pages/test.vue'
 import Edit from '../pages/edit.vue'
@@ -8,7 +9,12 @@ const routes = [
 
   {
     path: '/',
-    component: Main
+    component: Login
+  },
+  {
+    name:'login',
+    path: '/login',
+    component: Login
   },
   {
     name:'main',

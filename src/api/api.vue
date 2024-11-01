@@ -11,6 +11,14 @@ export default {
         }
       })
   },
+  getAllUser:function(param){
+    console.log(param)
+      return axios.post(`${API_URL}/user/getAllUser`,param,{
+        headers: {
+          accept: 'application/json',
+        }
+      })
+  },
   getAllLpList:function(param){
     console.log(param)
       return axios.post(`${API_URL}/lp/getAllLpList`,param,{

@@ -76,6 +76,7 @@ export default {
   data () {
     return {
      lpList : [],
+     user : {},
      lpList_org : [],
      keyword:'',
      searchOption:'name',
@@ -86,7 +87,7 @@ export default {
   methods:{
     async getAllLpList(){
                                             
-      let res = await this.$.components.api.getAllLpList()
+      let res = await this.$.components.api.getAllLpList({userId:this.user.userId})
       if(res.status == 200){
         console.log("@@@@@",res.data.data)
         this.lpList = res.data.data
@@ -161,7 +162,6 @@ export default {
       else if(genre == 'ETC') return '기타'
     },
     goEdit(lp){
-
       this.$router.push({
         path : 'edit',
         name : 'edit'
@@ -170,8 +170,12 @@ export default {
     }
   },
   mounted(){
-    this.getAllLpList()
-    console.log("SAFSAASD")
+    this.user = JSON.parse(window.localStorage.getItem('user'))
+    if(this.user && this.user.userId){
+      this.getAllLpList()
+    }else{
+      console.log("no user id!!")
+    }
   }
 }
 </script>

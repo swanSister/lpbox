@@ -4,7 +4,10 @@
   <div class="input-list">
     <div><span class="title">제목</span> <input v-model="name"/></div>
     <div><span class="title">가수</span> <input v-model="singer"/></div>
-    <div class="more-btn" v-on:click="goToGoogle(`${name} ${singer}`)">정보 검색</div>
+    <div>
+      <span class="title"></span>
+      <div class="more-btn" v-on:click="goToGoogle(`${name} ${singer}`)">구글 검색</div>
+    </div>
     <div><span class="title">장르</span> 
       <select class="genre-list" v-model="genre" id="genreList">
         <option value="none" selected="selected">=== 선택 ===</option>
@@ -67,6 +70,7 @@ export default {
   data () {
     return {
       lpId : '',
+      user : '',
       name : '',
       singer: '',
       releaseDate : '',
@@ -86,7 +90,25 @@ export default {
       console.log(`https://www.google.com/search?q=${googleSafeComponent}`)
       window.location=`https://www.google.com/search?q=${googleSafeComponent}`
     },
+    checkLogin(){
+      console.log(this.user)
+      if(!this.user.isAuth){
+        let pw = prompt(`ID:${this.user.id} 비밀번호를 입력하세요`,'')
+        if(pw==this.user.pw){
+          this.user.isAuth = true
+          window.localStorage.setItem('user',JSON.stringify(this.user))
+          return true
+        }else{
+          alert("비밀번호가 틀렸습니다.")
+          this.$router.go(-1)
+          return false
+        }
+      }else{
+        return true
+      }
+    },
     async uploadData(){
+      if(!this.checkLogin()) return
       console.log("######",this.$.components.api)
       if(this.name==''){ alert("제목을 입력해 주세요."); return;}
       if(this.singer==''){ alert("가수를 입력해 주세요."); return;}
@@ -127,6 +149,7 @@ export default {
         }
     },
     async deleteLp(){
+      if(!this.checkLogin()) return
       let isDelete = confirm('삭제하시겠습니까?')
       if(isDelete){
         let writingRes = await this.$.components.api.deleteLp({
@@ -206,6 +229,7 @@ export default {
   mounted(){
     let lp = JSON.parse(window.localStorage.getItem("lp"))
     this.lpId = lp.lpId ? lp.lpId : ''
+    this.user = JSON.parse(window.localStorage.getItem('user'))
     this.name = lp.name ? lp.name : ''
     this.singer = lp.singer ? lp.singer : ''
     this.releaseDate = lp.releaseDate ? lp.releaseDate : ''
@@ -214,6 +238,14 @@ export default {
     this.genre = lp.genre ? lp.genre : ''
     this.imgList = lp.imgList ? lp.imgList : []
     this.imgListOrigin = lp.imgList ? lp.imgList : []
+
+    if(!(this.user&&this.user.userId)){
+      alert("사용자를 선택해 주세요.")
+      this.$router.push({
+        path : 'login',
+        name : 'login'
+      })
+    }
   }
 }
 </script>
@@ -230,13 +262,12 @@ export default {
   display:flex;
   margin:2vw 0;
 }
-.input-list > div.more-btn{
+.input-list .more-btn{
+  padding:1vw 8vw;
   color:white;
   justify-content: center;
-  border-radius: 10vw;
+  border-radius: 2vw;
   background-color: rgba(123,86,72,.7);
-  margin:1vw 10vw;
-  padding: 1vw 0;
 }
 .input-list > div > .title{
   min-width: 30vw;
@@ -255,11 +286,14 @@ flex-grow: 1;
 .send-btn, .delete-btn{
   color:white;
   text-align: center;
-  margin:2vw 20vw;
+  margin:4vw 10vw;
   padding: 2vw 0;
   border-radius: 10vw;
   background-color: rgb(123,86,72);
   font-size:4vw;
+}
+.delete-btn{
+  background-color: rgb(161, 48, 48);
 }
 .input-list .desc{
   border : 0.5px solid rgba(0,0,0,0.5) ;

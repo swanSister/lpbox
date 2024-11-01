@@ -28,23 +28,23 @@ export default {
 <style scoped>
 .header{
   position:absolute 0 0 0 0;
-  font-size: 10vw; font-weight: bold;
+  font-size: 8vw; font-weight: bold;
   color:rgb(91,79,67);
   border-bottom: 0.5px solid rgba(0,0,0,0.5);
   display:flex; flex-direction: column;
   min-width: 100%; max-width: 100%;
-  min-height: 20vw; max-height: 20vw;
+  min-height: 14vw; max-height: 14vw;
   align-items: center; justify-content: center;
   margin-bottom: 2vw;
 }
 .header .add-btn{
   color:rgb(91,79,67);
-  font-size:8vw;
+  font-size:6vw;
   position:absolute; right:2vw;
 }
 .header .back-btn{
   color:rgb(91,79,67);
-  font-size:8vw;
+  font-size:6vw;
   position:absolute; left:2vw;
 }
 </style>
