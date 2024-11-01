@@ -141,7 +141,7 @@ export default {
             this.selectedImgList = []
           }
         }
-        this.$router.push('main')
+        this.$router.go(-1)
       }else{
         console.log("fail!!")
           console.error(writingRes)
@@ -157,7 +157,7 @@ export default {
           imgList:this.imgListOrigin
         })
         if(writingRes.status == 200){
-          this.$router.push('main')
+          this.$router.go(-1)
         }else{
           console.log(writingRes.error)
         }
@@ -241,10 +241,7 @@ export default {
 
     if(!(this.user&&this.user.userId)){
       alert("사용자를 선택해 주세요.")
-      this.$router.push({
-        path : 'login',
-        name : 'login'
-      })
+      this.$router.go(-1)
     }
   }
 }

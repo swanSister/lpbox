@@ -139,7 +139,7 @@ export default {
           let imgRes = await this.$.components.api.uploadLPImage(this.dataUriToBlob(this.imgList[i]),`${this.lpId}_${i}_post`)
           console.log("imgres : ",imgRes)
         }
-        this.$router.push('main')
+        this.$router.go(-1)
       }else{
         console.log("fail!!")
           console.error(writingRes)
