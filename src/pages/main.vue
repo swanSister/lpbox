@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <mainHeader/>
     <div class="input-content">
       <span class="icon icon-search"></span>
@@ -85,8 +86,7 @@ export default {
     }
   },
   methods:{
-    async getAllLpList(){
-                                            
+    async getAllLpList(){               
       let res = await this.$.components.api.getAllLpList({userId:this.user.userId})
       if(res.status == 200){
         console.log("@@@@@",res.data.data)
@@ -106,6 +106,24 @@ export default {
           console.log("eeeerror")
           
         }
+    },
+    checkLogin(back){
+      if(!this.user.isAuth){
+        let pw = prompt(`ID:${this.user.id} 비밀번호를 입력하세요`,'')
+        if(pw==this.user.pw){
+          this.user.isAuth = true
+          window.localStorage.setItem('user',JSON.stringify(this.user))
+          return true
+        }else{
+          alert("비밀번호가 틀렸습니다.")
+          if(!back){
+            this.$router.go(-1)
+          }
+          return false
+        }
+      }else{
+        return true
+      }
     },
     getTime(t){
       let curr = new Date()
@@ -162,6 +180,7 @@ export default {
       else if(genre == 'ETC') return '기타'
     },
     goEdit(lp){
+      if(!this.checkLogin(true)) return;
       this.$router.push({
         path : 'edit',
         name : 'edit'

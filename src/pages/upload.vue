@@ -211,6 +211,7 @@ export default {
     
   },
   mounted(){
+    console.log("mounted uploadpage!!!!")
     this.user = JSON.parse(window.localStorage.getItem('user'))
     if(!(this.user&&this.user.userId)){
       alert("사용자를 선택해 주세요.")
@@ -219,6 +220,10 @@ export default {
         name : 'login'
       })
     }
+    console.log("@@@user")
+    console.log(this.user)
+    this.checkLogin()
+    
   }
 }
 </script>
