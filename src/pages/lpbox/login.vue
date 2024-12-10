@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import api from '../api/api.vue'
-import loginHeader from '../components/header/login.vue'
+import api from '../../api/api.vue'
+import loginHeader from '../../components/lpbox/header/login.vue'
 export default {
   components:{
     api,
@@ -44,8 +44,8 @@ export default {
   login(user){
     window.localStorage.setItem('user',JSON.stringify(user))
     this.$router.push({
-    path : 'main',
-    name : 'main'
+    path : '/lpbox/main',
+    name : '/lpbox/main'
     })
   }
   },
@@ -59,10 +59,9 @@ export default {
 <style scoped>
 .user-card{
   font-size: 6vw;
-  background-color:  rgb(123,86,72);
+  background-color:  rgb(0,0,0);
   padding: 4vw 10vw;
   color:white;
-  border-radius: 4vw;
   margin: 4vw;
 }
 

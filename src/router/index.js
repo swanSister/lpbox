@@ -1,43 +1,45 @@
 import { createWebHashHistory, createRouter } from 'vue-router'
 import Main from '../pages/main.vue'
-import Login from '../pages/login.vue'
-import Upload from '../pages/upload.vue'
-import Test from '../pages/test.vue'
-import Edit from '../pages/edit.vue'
-
+import LpboxMain from '../pages/lpbox/main.vue'
+import LpboxLogin from '../pages/lpbox/login.vue'
+import LpboxUpload from '../pages/lpbox/upload.vue'
+import LpboxEdit from '../pages/lpbox/edit.vue'
+import Mars from '../pages/mars/MarsMain.vue'
 const routes = [
-
   {
     path: '/',
-    component: Login
+    component: Main
   },
   {
-    name:'login',
-    path: '/login',
-    component: Login
-  },
-  {
-    name:'main',
+    name:'/main',
     path: '/main',
     component: Main
   },
   {
-    name:'upload',
-    path: '/upload',
-    component: Upload
+    name:'/lpbox/main',
+    path: '/lpbox/main',
+    component: LpboxMain
   },
   {
-    name:'edit',
-    path: '/edit',
-    component: Edit,
-    props: true
+    name:'/lpbox/login',
+    path: '/lpbox/login',
+    component: LpboxLogin
   },
   {
-    name:'test',
-    path: '/test',
-    component: Test
-  }
-  
+    name:'/lpbox/upload',
+    path: '/lpbox/upload',
+    component: LpboxUpload
+  },
+  {
+    name:'/lpbox/edit',
+    path: '/lpbox/edit',
+    component: LpboxEdit
+  },
+  {
+    name:'/mars/main',
+    path: '/mars/main',
+    component: Mars
+  },
 ]
 
 export const router = createRouter({

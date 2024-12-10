@@ -5,8 +5,8 @@
     <div><span class="title">제목</span> <input v-model="name"/></div>
     <div><span class="title">가수</span> <input v-model="singer"/></div>
     <div>
-      <span class="title">정보</span>
-      <div class="more-btn" v-on:click="goToGoogle(`${name} ${singer}`)">정보 검색</div>
+      <span class="title"></span>
+      <div class="more-btn" v-on:click="goToGoogle(`${name} ${singer}`)">검색</div>
     </div>
     <div><span class="title">장르</span> 
       <select class="genre-list" v-model="genre" id="genreList">
@@ -49,13 +49,14 @@
       <img v-if="imgList.length>0" :src="imgList[0]"/>
     </div>
   </div>
-    <div class="send-btn" @click="uploadData">전송</div>
+    <div class="send-btn" @click="uploadData">편집</div>
+    <div class="delete-btn" @click="deleteLp">삭제</div>
   </div>
 </template>
 
 <script>
-import api from '../api/api.vue'
-import mainHeader from '../components/header/index.vue'
+import api from '../../api/api.vue'
+import mainHeader from '../../components/lpbox/header/index.vue'
 
 export default {
   
@@ -69,8 +70,7 @@ export default {
   data () {
     return {
       lpId : '',
-      user:'',
-      userId : '',
+      user : '',
       name : '',
       singer: '',
       releaseDate : '',
@@ -78,6 +78,8 @@ export default {
       price : '',
       genre : '',
       imgList : [],
+      imgListOrigin : [],
+      selectedImgList:[],
       isPickerShow:false,
     }
   },
@@ -88,14 +90,8 @@ export default {
       console.log(`https://www.google.com/search?q=${googleSafeComponent}`)
       window.location=`https://www.google.com/search?q=${googleSafeComponent}`
     },
-    generateUID() {
-      var firstPart = (Math.random() * 46656) | 0;
-      var secondPart = (Math.random() * 46656) | 0;
-      firstPart = ("000" + firstPart.toString(36)).slice(-3);
-      secondPart = ("000" + secondPart.toString(36)).slice(-3);
-      return firstPart + secondPart;
-    },
     checkLogin(){
+      console.log(this.user)
       if(!this.user.isAuth){
         let pw = prompt(`ID:${this.user.id} 비밀번호를 입력하세요`,'')
         if(pw==this.user.pw){
@@ -113,43 +109,63 @@ export default {
     },
     async uploadData(){
       if(!this.checkLogin()) return
-      this.lpId = this.generateUID()
       console.log("######",this.$.components.api)
       if(this.name==''){ alert("제목을 입력해 주세요."); return;}
       if(this.singer==''){ alert("가수를 입력해 주세요."); return;}
       if(this.releaseDate==''){ alert("발매일을 입력해 주세요."); return;}
       if(this.price==''){ alert("가격을 입력해 주세요."); return;}
       if(this.genre==''){ alert("장르를 입력해 주세요."); return;}
-
-      let writingRes = await this.$.components.api.createLp({
+      console.log("uploadData!!!",this.name)
+      let writingRes = await this.$.components.api.updateLp({
         lpId: this.lpId,
-        userId: this.user.userId,
         name: this.name,
         singer: this.singer,
         releaseDate: this.releaseDate,
         description: this.description,
         price: this.price,
         genre: this.genre,
-        imgList: [],
+        imgList: this.imgList,
       })
+
       if(writingRes.status == 200){
-        console.log("success!!!")
-      for(let i = 0; i<this.imgList.length; i++){
-          console.log("#####",i)
-          let imgRes = await this.$.components.api.uploadLPImage(this.dataUriToBlob(this.imgList[i]),`${this.lpId}_${i}_post`)
-          console.log("imgres : ",imgRes)
+        if(this.selectedImgList.length>0){
+          writingRes = await this.$.components.api.deleteImg({
+            lpId: this.lpId,
+            imgList:this.imgListOrigin
+          })
+          if(writingRes.status == 200){
+            this.imgList = this.selectedImgList
+            for(let i = 0; i<this.imgList.length; i++){
+                let imgRes = await this.$.components.api.uploadLPImage(this.dataUriToBlob(this.imgList[i]),`${this.lpId}_${i}_post`)
+            }
+            this.selectedImgList = []
+          }
         }
         this.$router.go(-1)
       }else{
         console.log("fail!!")
           console.error(writingRes)
           console.log("eeeerror")
-          
         }
+    },
+    async deleteLp(){
+      if(!this.checkLogin()) return
+      let isDelete = confirm('삭제하시겠습니까?')
+      if(isDelete){
+        let writingRes = await this.$.components.api.deleteLp({
+          lpId: this.lpId,
+          imgList:this.imgListOrigin
+        })
+        if(writingRes.status == 200){
+          this.$router.go(-1)
+        }else{
+          console.log(writingRes.error)
+        }
+      }
     },
     async previewFiles(event) {
       let that = this
-      that.imgList = []
+      this.selectedImgList = []
       var oFReader = new FileReader()
         oFReader.readAsDataURL(event.target.files[0])
         oFReader.onload = function (oFREvent) {
@@ -157,7 +173,8 @@ export default {
               image.src= oFREvent.target.result
               image.onload = function(){
                 let src = that.resizeImage(image)
-                that.imgList.push(src)
+                that.selectedImgList.push(src)
+                that.imgList = that.selectedImgList
               }
         };
     },
@@ -208,28 +225,30 @@ export default {
       // let year = this.$moment().format('YYYY')
     
     },
-    
   },
   mounted(){
-    console.log("mounted uploadpage!!!!")
+    let lp = JSON.parse(window.localStorage.getItem("lp"))
+    this.lpId = lp.lpId ? lp.lpId : ''
     this.user = JSON.parse(window.localStorage.getItem('user'))
+    this.name = lp.name ? lp.name : ''
+    this.singer = lp.singer ? lp.singer : ''
+    this.releaseDate = lp.releaseDate ? lp.releaseDate : ''
+    this.description = lp.description ? lp.description : ''
+    this.price = lp.price ? lp.price : ''
+    this.genre = lp.genre ? lp.genre : ''
+    this.imgList = lp.imgList ? lp.imgList : []
+    this.imgListOrigin = lp.imgList ? lp.imgList : []
+
     if(!(this.user&&this.user.userId)){
       alert("사용자를 선택해 주세요.")
-      this.$router.push({
-        path : 'login',
-        name : 'login'
-      })
+      this.$router.go(-1)
     }
-    console.log("@@@user")
-    console.log(this.user)
-    this.checkLogin()
-    
   }
 }
 </script>
 <style scoped>
 .input-list{
-  color:rgb(91,79,67);
+  color:rgb(0,0,0);
   font-size:6vw;
   display:flex;
   flex-direction: column;
@@ -240,13 +259,12 @@ export default {
   display:flex;
   margin:2vw 0;
 }
-.input-list > div.more-btn{
+.input-list .more-btn{
+  font-size: 4vw;
+  padding:1vw 8vw;
   color:white;
   justify-content: center;
-  border-radius: 10vw;
-  background-color: rgba(123,86,72,.7);
-  margin:1vw 10vw;
-  padding: 1vw 0;
+  background-color: rgba(0,0,0,.7);
 }
 .input-list > div > .title{
   min-width: 30vw;
@@ -262,14 +280,16 @@ flex-grow: 1;
   border:0.5px solid rgba(0,0,0,0.5) ;
   flex-grow: 1;
 }
-.send-btn{
+.send-btn, .delete-btn{
   color:white;
   text-align: center;
-  margin:2vw 20vw;
+  margin:4vw 10vw;
   padding: 2vw 0;
-  border-radius: 10vw;
-  background-color: rgb(123,86,72);
-  font-size:6vw;
+  background-color: rgba(0,0,0,.7);
+  font-size:4vw;
+}
+.delete-btn{
+  background-color: rgb(161, 48, 48);
 }
 .input-list .desc{
   border : 0.5px solid rgba(0,0,0,0.5) ;

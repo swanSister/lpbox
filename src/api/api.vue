@@ -1,7 +1,7 @@
 
 <script>
 import axios from 'axios'
-const API_URL = "http://52.79.215.83:3002"
+const API_URL = "http://3.34.211.151:3002"
 export default { 
   createLp:function(param){
     console.log(param)
