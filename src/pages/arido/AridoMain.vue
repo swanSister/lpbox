@@ -22,10 +22,22 @@ export default {
   methods: {
     onResize() {
       const iframe = this.$refs.unityIframe;
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      iframe.style.width = `${width}px`;  // 화면 너비에 맞추기
-      iframe.style.height = `${height}px`; // 화면 높이에 맞추기
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      
+      // 화면 비율 계산 (가로 / 세로)
+      const screenRatio = screenWidth / screenHeight;
+
+      // 가로가 작은 화면에서 가로에 맞추고 세로는 자동으로 비율에 맞게 조정
+      if (screenRatio < 1) {
+        // 세로가 긴 경우, 가로 크기에 맞추고 세로는 비율에 맞게 자동 조정
+        iframe.style.width = `${screenWidth}px`;
+        iframe.style.height = `${screenWidth / screenRatio}px`; // 세로 비율에 맞게 높이 자동 설정
+      } else {
+        // 화면 비율이 세로보다 가로가 긴 경우는 그대로 가로 100%, 세로 100% 맞춤
+        iframe.style.width = `${screenWidth}px`;
+        iframe.style.height = `${screenHeight}px`;
+      }
     }
   }
 }
@@ -35,5 +47,6 @@ export default {
 .iframe-container {
   width: 100%;
   height: 100vh;  /* 화면 전체 높이에 맞추기 */
+  position: relative;
 }
 </style>
