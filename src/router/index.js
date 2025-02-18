@@ -5,6 +5,8 @@ import LpboxLogin from '../pages/lpbox/login.vue'
 import LpboxUpload from '../pages/lpbox/upload.vue'
 import LpboxEdit from '../pages/lpbox/edit.vue'
 import Mars from '../pages/mars/MarsMain.vue'
+import Arido from '../pages/arido/AridoMain.vue'
+
 const routes = [
   {
     path: '/',
@@ -39,6 +41,11 @@ const routes = [
     name:'/mars/main',
     path: '/mars/main',
     component: Mars
+  },
+  {
+    name:'/arido/main',
+    path: '/arido/main',
+    component: Arido
   },
 ]
 

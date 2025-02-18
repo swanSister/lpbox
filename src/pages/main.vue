@@ -2,7 +2,8 @@
     <div>
       <div class="title" @click="goToPage('lpbox')">LP BOX</div>
       <div class="title" @click="goToPage('mars')">Mars rovers</div>
-      <div class="title" @click="goToPage('kakaogame')">kakao game</div>
+      <div class="title" @click="goToPage('kakaogame')">Kakao game</div>
+      <div class="title" @click="goToPage('arido')">Arido</div>
     </div>
   </template>
   
@@ -34,6 +35,11 @@
                 })
             }else if(to=='kakaogame'){
               window.location=`http://3.34.211.151:3004`
+            }else if(to=='arido'){
+              this.$router.push({
+                path : '/arido/main',
+                name : '/arido/main'
+                })
             }
         }
     },
