@@ -24,13 +24,20 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        position: relative;
+        position: absolute;
+        top: 0;
+        left: 0;
       }
 
       #unity-canvas {
         background: #1F1F20;
         display: block;
-        position:fixed;
+        max-width: 100%;
+        max-height: 100%;
+        position: fixed; /* 화면 고정 */
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%); /* 가로 중앙 정렬 */
       }
     </style>
   </head>
@@ -69,9 +76,7 @@
         // 캔버스를 화면에 맞게 중앙 배치
         canvas.style.width = `${newWidth}px`;
         canvas.style.height = `${newHeight}px`;
-        canvas.style.position = "fixed"; // 화면 고정
-        canvas.style.top = "0";
-        canvas.style.left = "0";
+        canvas.style.top = "0"; // top 0
       }
 
       // 화면 크기 변경 시마다 크기 조정
