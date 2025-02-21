@@ -1,127 +1,106 @@
 <template>
   <div class="iframe-container">
+    <!-- 로고 추가 -->
+    <h1 class="logo">Arido</h1>
+    
+    <!-- Unity iframe -->
     <iframe
       ref="unityIframe"
       :src="'/unity/index.html'"
       frameborder="0"
-      style="width: 100%; height: 100vh; border: none;"
+      class="unity-iframe"
     ></iframe>
-    <button @click="startRecording">녹화 시작</button>
-    <button @click="stopRecording" v-if="isRecording">녹화 중지</button>
-    <button @click="downloadRecording" v-if="recordedBlob">다운로드</button>
   </div>
 </template>
 
 <script>
 export default {
   data() {
-    return {
-      isRecording: false,
-      mediaRecorder: null,
-      recordedChunks: [],
-      recordedBlob: null,
-      audioStream: null,
-      videoStream: null,
-      audioContext: null,
-      destination: null,
-    };
-  },
-  beforeDestroy() {
-    this.stopRecording(); // 컴포넌트가 파괴되기 전에 녹화를 종료
-  },
-  methods: {
-    async startRecording() {
-      const iframe = this.$refs.unityIframe;
-      const videoElement = iframe.contentWindow.document.querySelector('canvas'); // Unity WebGL의 canvas
-
-      // 화면 캡처를 위한 video stream 설정
-      this.videoStream = videoElement.captureStream();
-
-      // AudioContext를 사용하여 오디오 스트림 처리
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      this.destination = this.audioContext.createMediaStreamDestination();
-
-      try {
-        // 오디오 캡처를 위한 사용자 미디어 요청
-        this.audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const source = this.audioContext.createMediaStreamSource(this.audioStream);
-        source.connect(this.destination);
-      } catch (err) {
-        console.error('오디오 캡처 실패:', err);
-        return;
-      }
-
-      // 화면과 오디오 스트림 합치기
-      const combinedStream = new MediaStream([
-        ...this.videoStream.getTracks(),
-        ...this.destination.stream.getTracks(),
-      ]);
-
-      // MediaRecorder로 녹화 시작
-      this.mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
-
-      // 데이터가 준비될 때마다 녹화된 데이터를 기록
-      this.mediaRecorder.ondataavailable = (event) => {
-        this.recordedChunks.push(event.data);
-      };
-      
-      // 녹화가 중지되면, 녹화된 데이터를 하나의 Blob으로 결합
-      this.mediaRecorder.onstop = () => {
-        this.recordedBlob = new Blob(this.recordedChunks, { type: 'video/webm' });
-      };
-
-      // 녹화 시작
-      this.mediaRecorder.start();
-      this.isRecording = true;
-    },
-
-    stopRecording() {
-      if (this.mediaRecorder) {
-        // 녹화 중지
-        this.mediaRecorder.stop();
-
-        // 스트림 종료
-        this.audioStream.getTracks().forEach((track) => track.stop());
-        this.videoStream.getTracks().forEach((track) => track.stop());
-
-        if (this.audioContext) {
-          this.audioContext.close(); // AudioContext 종료
-        }
-      }
-      this.isRecording = false;
-    },
-
-    downloadRecording() {
-      if (this.recordedBlob) {
-        // 녹화된 Blob을 URL로 변환 후 다운로드
-        const url = URL.createObjectURL(this.recordedBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'recording.webm'; // 다운로드할 파일명
-        link.click();
-      }
-    },
+    return {};
   },
 };
 </script>
 
 <style scoped>
+/* iframe과 로고를 감싸는 컨테이너 */
 .iframe-container {
   width: 100%;
   height: 100vh; /* 화면 전체 높이에 맞추기 */
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #f9f9f9; /* 밝은 배경 색상 */
 }
-button {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
+
+/* 로고 스타일 */
+.logo {
+  font-size: 4rem; /* 크게 보이는 로고 크기 */
+  font-weight: 700;
+  color: #ffffff; /* 흰색 글자 */
+  background: linear-gradient(45deg, #ff9900, #ffcc00); /* 진한 노란색과 밝은 노란색 그라데이션 */
+  padding: 20px 40px;
+  border-radius: 30px;
+  box-shadow: 0px 8px 15px rgba(255, 204, 0, 0.5); /* 부드러운 그림자 효과 */
+  margin-top: 30px;
+  text-align: center;
+  width: 80%;
+  max-width: 550px;
+  letter-spacing: 3px; /* 글자 간격 조정 */
+  font-family: 'Dancing Script', cursive; /* 손글씨 느낌을 주기 위한 글꼴 */
+  text-transform: uppercase; /* 대문자로 변환 */
+  animation: fadeIn 1.5s ease-in-out, moveUp 2s ease-in-out infinite alternate; /* 애니메이션 추가 */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* 글자에 그림자 효과 추가 */
+}
+
+/* 로고 애니메이션: fadeIn - 서서히 나타남 */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* 로고 애니메이션: moveUp - 살짝 위로 올라가는 애니메이션 */
+@keyframes moveUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+/* iframe 스타일 */
+.unity-iframe {
+  width: 100%;
+  height: calc(100vh - 150px); /* 로고 높이를 제외한 나머지 화면을 iframe에 할당 */
   border: none;
-  cursor: pointer;
 }
-button:hover {
-  background-color: #0056b3;
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .logo {
+    font-size: 2.5rem; /* 화면 크기에 맞춰 제목 크기 축소 */
+    padding: 15px 30px;
+  }
+
+  .unity-iframe {
+    height: calc(100vh - 120px); /* 더 작은 화면에서 로고와 iframe 비율 맞추기 */
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 2rem; /* 더 작은 화면에서는 제목을 더 작게 */
+    padding: 10px 20px;
+  }
+
+  .unity-iframe {
+    height: calc(100vh - 100px); /* 더 작은 화면에서 iframe 크기 조정 */
+  }
 }
 </style>
