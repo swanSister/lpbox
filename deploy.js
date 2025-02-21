@@ -25,6 +25,21 @@ server.use('/', express.static(path.join(__dirname, '/dist'), {
     }
 }));
 
+// Unity WebGL 빌드 파일들 제공 경로 설정
+server.use('/unity/Build', express.static(path.join(__dirname, '/public/unity/Build'), {
+    setHeaders: function (res, filePath) {
+        // .gz 파일에 대해 Content-Encoding 헤더 추가
+        if (filePath.endsWith('.gz')) {
+            res.set('Content-Encoding', 'gzip');
+            
+            // .wasm.gz 파일에 대해 Content-Type을 'application/wasm'으로 설정
+            if (filePath.endsWith('.wasm.gz')) {
+                res.set('Content-Type', 'application/wasm');
+            }
+        }
+    }
+}));
+
 // 서버 포트 3003에서 실행
 server.listen(3003, function() {
   console.log("Server running on port 3003 with CORS enabled");
