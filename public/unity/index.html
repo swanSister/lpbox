@@ -39,7 +39,7 @@
       <canvas id="unity-canvas" tabindex="-1"></canvas>
     </div>
 
-    <script src="Build/Arido.loader.js"></script>
+    <script src="Build/arido.loader.js"></script>
     <script>
       // 화면 크기 변경 시 캔버스 크기를 동적으로 조정하는 함수
       function adjustCanvasSize() {
@@ -83,9 +83,9 @@
       // Unity WebGL 인스턴스 로드
       createUnityInstance(document.querySelector("#unity-canvas"), {
         arguments: [],
-        dataUrl: "Build/Arido.data.gz",
-        frameworkUrl: "Build/Arido.framework.js.gz",
-        codeUrl: "Build/Arido.wasm.gz",
+        dataUrl: "Build/arido.data.gz",
+        frameworkUrl: "Build/arido.framework.js.gz",
+        codeUrl: "Build/arido.wasm.gz",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "My project (1)",
