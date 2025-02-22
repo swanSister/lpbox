@@ -36,7 +36,8 @@ export default {
   computed: {
     // mode에 따라 iframe의 src 경로가 동적으로 설정됨
     unityBuildPath() {
-      return `http://localhost:3005/${this.mode}/index.html`; // mode에 맞는 경로
+      return `http://3.34.211.151:3005/${this.mode}/index.html`; // 배포용
+      //return `http://localhost:3005/${this.mode}/index.html`; // mode에 맞는 경로
     },
     iframeWidth() {
       const screenWidth = window.innerWidth;
