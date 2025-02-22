@@ -3,14 +3,20 @@
     <!-- 로고 추가 -->
     <h1 class="logo">Arido</h1>
 
+    <!-- 로딩 스피너 (동그랗게 돌아가는 로딩 애니메이션) -->
+    <div v-if="isLoading" class="loading-spinner-container">
+      <div class="loading-spinner"></div>
+    </div>
+
     <!-- Unity iframe -->
     <iframe
       ref="unityIframe"
-      :key="mode" 
-      :src="unityBuildPath" 
+      :key="mode"
+      :src="unityBuildPath"
       frameborder="0"
       class="unity-iframe"
       :style="{ height: iframeHeight + 'px', width: iframeWidth + 'px' }"
+      @load="onIframeLoad"
     ></iframe>
 
     <div class="mode-selector">
@@ -31,13 +37,13 @@ export default {
       mode: 'mode1', // 기본적으로 mode1을 선택
       unityWidth: 965, // Unity 게임 빌드의 가로 크기
       unityHeight: 600, // Unity 게임 빌드의 세로 크기
+      isLoading: true, // 로딩 상태
     };
   },
   computed: {
     // mode에 따라 iframe의 src 경로가 동적으로 설정됨
     unityBuildPath() {
       return `http://3.34.211.151:3005/${this.mode}/index.html`; // 배포용
-      //return `http://localhost:3005/${this.mode}/index.html`; // mode에 맞는 경로
     },
     iframeWidth() {
       const screenWidth = window.innerWidth;
@@ -58,6 +64,12 @@ export default {
     // mode 변경 메서드
     setMode(mode) {
       this.mode = mode;
+      this.isLoading = true; // 새로 모드를 설정하면 로딩을 시작
+    },
+
+    // iframe 로딩 완료 메서드
+    onIframeLoad() {
+      this.isLoading = false; // 로딩 완료
     }
   }
 };
@@ -112,6 +124,34 @@ export default {
   width: 100vw; /* 화면 너비에 맞게 설정 */
   height: auto; /* 높이는 동적으로 계산된 값 */
   border: none;
+}
+
+/* 로딩 스피너 스타일 */
+.loading-spinner-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+}
+
+.loading-spinner {
+  border: 5px solid #f3f3f3; /* 배경색 */
+  border-top: 5px solid #ff9900; /* 회전하는 부분 색상 */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite; /* 회전 애니메이션 */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 버튼 스타일 (모드 선택 버튼) */
@@ -182,7 +222,6 @@ export default {
 /* 가로모드 스타일 추가 */
 @media (orientation: landscape) {
   .unity-iframe {
-  
     margin: 0 auto; /* iframe을 화면 중앙에 배치 */
     display: block;
   }
