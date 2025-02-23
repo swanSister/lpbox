@@ -3,11 +3,6 @@
     <!-- 로고 추가 -->
     <h1 class="logo">Arido</h1>
 
-    <!-- 로딩 스피너 (동그랗게 돌아가는 로딩 애니메이션) -->
-    <div v-if="isLoading" class="loading-spinner-container">
-      <div class="loading-spinner"></div>
-    </div>
-
     <!-- Unity iframe -->
     <iframe
       ref="unityIframe"
@@ -16,12 +11,11 @@
       frameborder="0"
       class="unity-iframe"
       :style="{ height: iframeHeight + 'px', width: iframeWidth + 'px' }"
-      @load="onIframeLoad"
     ></iframe>
 
     <div class="mode-selector">
       <button @click="setMode('mode1')">
-        <span class="icon">🔥</span> CHI CHI
+        <span class="icon">🔥</span> CHICHI
       </button>
       <button @click="setMode('mode2')">
         <span class="icon">🌟</span> Mode 2
@@ -37,7 +31,6 @@ export default {
       mode: 'mode1', // 기본적으로 mode1을 선택
       unityWidth: 965, // Unity 게임 빌드의 가로 크기
       unityHeight: 600, // Unity 게임 빌드의 세로 크기
-      isLoading: true, // 로딩 상태
     };
   },
   computed: {
@@ -64,12 +57,6 @@ export default {
     // mode 변경 메서드
     setMode(mode) {
       this.mode = mode;
-      this.isLoading = true; // 새로 모드를 설정하면 로딩을 시작
-    },
-
-    // iframe 로딩 완료 메서드
-    onIframeLoad() {
-      this.isLoading = false; // 로딩 완료
     }
   }
 };
@@ -78,28 +65,31 @@ export default {
 <style scoped>
 /* iframe과 로고를 감싸는 컨테이너 */
 .iframe-container {
-  width: 100vw; /* 화면 너비에 맞춤 */
-  height: auto; /* 화면 높이에 맞춤 */
+  width: 100vw;
+  height: auto;
   position: relative;
   display: block;
+  background-color: #f8f8f8; /* 부드러운 배경색 추가 */
+  overflow: hidden;
 }
 
+/* 로고 스타일 */
 .logo {
-  font-size: 4vw; /* 로고 크기를 화면 너비에 맞게 설정 */
+  font-size: 5vw; /* 로고 크기를 화면 너비에 맞게 설정 */
   font-weight: 700;
-  color: #ffffff;
-  background: linear-gradient(45deg, #ff9900, #ffcc00);
+  color: #fff;
+  background: linear-gradient(45deg, #ffb84d, #ffcc00); /* 부드러운 그라데이션 */
   border-radius: 3vh;
-  box-shadow: 0px 1vh 3vh rgba(255, 204, 0, 0.5); /* 그림자 크기도 vh로 설정 */
+  box-shadow: 0px 2vh 6vh rgba(0, 0, 0, 0.15); /* 그림자 효과 추가 */
   margin: 0 auto;
-  margin-top: 8vw; /* 여백을 vh 단위로 설정 */
-  margin-bottom: 5vw; /* 여백을 vh 단위로 설정 */
+  margin-top: 10vw;
+  margin-bottom: 5vw;
   text-align: center;
   width: 80%;
   letter-spacing: 0.5vw;
   text-transform: uppercase;
   animation: fadeIn 1.5s ease-in-out, moveUp 2s ease-in-out infinite alternate;
-  text-shadow: 0.5vw 0.5vw 1vh rgba(0, 0, 0, 0.3); /* 글자 그림자 크기 조정 */
+  text-shadow: 0.5vw 0.5vw 1vh rgba(0, 0, 0, 0.3);
 }
 
 @keyframes fadeIn {
@@ -120,64 +110,39 @@ export default {
   }
 }
 
+/* Unity iframe 스타일 */
 .unity-iframe {
-  width: 100vw; /* 화면 너비에 맞게 설정 */
-  height: auto; /* 높이는 동적으로 계산된 값 */
+  width: 100vw;
+  height: auto;
   border: none;
-}
-
-/* 로딩 스피너 스타일 */
-.loading-spinner-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50px;
-  height: 50px;
-}
-
-.loading-spinner {
-  border: 5px solid #f3f3f3; /* 배경색 */
-  border-top: 5px solid #ff9900; /* 회전하는 부분 색상 */
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 2s linear infinite; /* 회전 애니메이션 */
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 /* 버튼 스타일 (모드 선택 버튼) */
 .mode-selector {
-  margin: 1vw;
+  margin: 2vh 0;
+  margin-bottom: 10vw;
   display: flex;
   justify-content: center;
 }
 
 .mode-selector button {
-  margin: 0 1vw;
+  margin: 0 2vw;
   padding: 2vh 4vw;
   font-size: 2.5vw;
-  background: linear-gradient(45deg, #ff9900, #ffcc00);
+  background: linear-gradient(45deg, #ffb84d, #ffcc00); /* 부드러운 노랑 계열 */
   color: white;
   border: 2px solid transparent;
   border-radius: 1vw;
   cursor: pointer;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 버튼에 그림자 효과 */
 }
 
 .mode-selector button:hover {
-  background: linear-gradient(45deg, #ffcc00, #ff9900);
+  background: linear-gradient(45deg, #ffcc00, #ffb84d);
   transform: scale(1.1);
-  box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+  box-shadow: 0 0 12px rgba(255, 204, 0, 0.5);
 }
 
 .mode-selector button:active {
@@ -189,18 +154,19 @@ export default {
   font-size: 2.5vw;
 }
 
+/* 반응형 디자인 */
 @media (max-width: 768px) {
   .logo {
     font-size: 8vw;
   }
 
   .unity-iframe {
-    height: calc(100vh - 12vh);
+    height: calc(100vh - 15vh);
   }
 
   .mode-selector button {
     font-size: 4vw;
-    padding: 2vh;
+    padding: 3vh;
   }
 }
 
@@ -215,14 +181,14 @@ export default {
 
   .mode-selector button {
     font-size: 5vw;
-    padding: 2vw;
+    padding: 4vw;
   }
 }
 
-/* 가로모드 스타일 추가 */
+/* 가로모드 스타일 */
 @media (orientation: landscape) {
   .unity-iframe {
-    margin: 0 auto; /* iframe을 화면 중앙에 배치 */
+    margin: 0 auto;
     display: block;
   }
 }
