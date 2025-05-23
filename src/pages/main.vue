@@ -36,10 +36,7 @@
             }else if(to=='kakaogame'){
               window.location=`http://3.34.211.151:3004`
             }else if(to=='arido'){
-              this.$router.push({
-                path : '/arido/main',
-                name : '/arido/main'
-                })
+              window.location=`https://arido1.com/#/`
             }
         }
     },
