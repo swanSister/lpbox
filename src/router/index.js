@@ -7,6 +7,7 @@ import LpboxEdit from '../pages/lpbox/edit.vue'
 import Mars from '../pages/mars/MarsMain.vue'
 import Arido from '../pages/arido/AridoMain.vue'
 import Game from '../pages/game.vue'
+import Futsal from '../pages/futsal.vue'
 
 const routes = [
   {
@@ -52,6 +53,11 @@ const routes = [
     name:'/game',
     path: '/game',
     component: Game
+  },
+  {
+    name:'/futsal',
+    path: '/futsal',
+    component: Futsal
   },
 ]
 

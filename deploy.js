@@ -41,6 +41,6 @@ server.use('/unity/Build', express.static(path.join(__dirname, '/public/unity/Bu
 }));
 
 // 서버 포트 3003에서 실행
-server.listen(3003, function() {
+server.listen(3001, function() {
   console.log("Server running on port 3003 with CORS enabled");
 });
