@@ -14,7 +14,7 @@
 
 <script>
 import api from '../../api/api.vue'
-import loginHeader from '../../components/lpbox/header/login.vue'
+import loginHeader from '../../components/futsal/header/login.vue'
 export default {
   components:{
     api,

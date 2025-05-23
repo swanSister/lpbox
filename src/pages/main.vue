@@ -1,5 +1,6 @@
 <template>
     <div>
+      <div class="title" @click="goToPage('futsal')">FC 우왕좌왕</div>
       <div class="title" @click="goToPage('lpbox')">LP BOX</div>
       <div class="title" @click="goToPage('mars')">Mars rovers</div>
       <div class="title" @click="goToPage('kakaogame')">Kakao game</div>
@@ -26,6 +27,12 @@
                 this.$router.push({
                 path : '/lpbox/login',
                 name : '/lpbox/login'
+                })
+            }
+            else if(to=='futsal'){
+              this.$router.push({
+                path : '/futsal/main',
+                name : '/futsal/main'
                 })
             }
             else if(to=='mars'){
