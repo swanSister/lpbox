@@ -43,12 +43,27 @@
           />
         </div>
       </div>
+  
+      <div class="title-box">
+        <span class="title">정렬</span>
+        <div class="sort-buttons">
+          <button @click="changeSort('name')">이름순</button>
+          <button @click="changeSort('createdAt')">등록일순</button>
+          <button @click="changeSort('age')">나이순</button>
+        </div>
+      </div>
       <div class="title-box">
         <span class="title">참석 인원</span>
+     
         <div class="member-list">
+          <span class="select-controls">
+            <button type="button" @click="toggleSelectAll">
+              {{ isAllSelected ? '전체 해제' : '전체 선택' }}
+            </button>
+          </span>
           <label
-            v-for="member in memberList"
-            :key="member.id"
+            v-for="member in sortedMembers"
+            :key="member.userId"
             class="member-item"
           >
             <input type="checkbox" :value="member" v-model="selectedMembers" />
@@ -59,7 +74,7 @@
       <div class="send-btn" @click="uploadFutsal">전송</div>
     </div>
 
-    <div class="input-list" v-if="mode =='user'">
+    <div class="input-list" v-if="mode == 'user'">
       <div class="title-box">
         <span class="title">이름</span> <input v-model="userName" />
       </div>
@@ -80,17 +95,23 @@
       <div class="send-btn" @click="uploadUser">전송</div>
     </div>
 
-    <div class="input-list member-list" v-if="mode =='memberList'">
+    <div class="input-list member-list" v-if="mode == 'memberList'">
+      <div class="sort-buttons">
+        <button @click="changeSort('name')">이름순</button>
+        <button @click="changeSort('createdAt')">등록일순</button>
+        <button @click="changeSort('age')">나이순</button>
+      </div>
       <div
-            v-for="(member,index) in memberList"
-            :key="member.id"
-            class="member-item"
-          >
-           
-            {{index+1}}. {{ member.name }}/{{ member.age }}/{{ member.location }}
+        v-for="(member, index) in sortedMembers"
+        :key="member.userId"
+        class="member-item"
+        @click="confirmDelete(member.userId)"
+      >
+        {{ index + 1 }}. {{ member.name }}/{{ member.age }}/{{
+          member.location
+        }}
       </div>
     </div>
-
   </div>
 </template>
 
@@ -133,16 +154,32 @@ export default {
       gender: "",
       selectedMembers: [],
       isPickerShow: false,
+      sortKey: "name", // ← 반드시 선언
+      sortOrder: "asc", // ← 이것도
+      
     };
   },
-
-  methods: {
-    goToGoogle(title) {
-      var encodedComponent = encodeURIComponent(title);
-      var googleSafeComponent = encodedComponent.replace(/%20/g, "+");
-      console.log(`https://www.google.com/search?q=${googleSafeComponent}`);
-      window.location = `https://www.google.com/search?q=${googleSafeComponent}`;
+  computed: {
+    sortedMembers() {
+      return [...this.memberList].sort((a, b) => {
+        let modifier = this.sortOrder === "asc" ? 1 : -1;
+        if (this.sortKey === "createdAt") {
+          return modifier * (new Date(a.createdAt) - new Date(b.createdAt));
+        }
+        if (typeof a[this.sortKey] === "string") {
+          return modifier * a[this.sortKey].localeCompare(b[this.sortKey]);
+        }
+        return modifier * (a[this.sortKey] - b[this.sortKey]);
+      });
     },
+    isAllSelected() {
+      return (
+        this.sortedMembers.length > 0 &&
+        this.selectedMembers.length === this.sortedMembers.length
+      );
+    }
+  },
+  methods: {
     generateUID() {
       var firstPart = (Math.random() * 46656) | 0;
       var secondPart = (Math.random() * 46656) | 0;
@@ -177,7 +214,26 @@ export default {
         console.log("eeeerror");
       }
     },
-
+    changeSort(key) {
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
+      } else {
+        this.sortKey = key;
+        this.sortOrder = "asc";
+      }
+    },
+    async confirmDelete(id) {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        let writingRes = await this.$.components.api.deleteFutsalUser({
+          userId: id,
+        });
+        if (writingRes.status == 200) {
+          this.getAllFutsalUser();
+        } else {
+          console.error(writingRes);
+        }
+      }
+    },
     async uploadUser() {
       this.userId = this.generateUID();
       console.log("######", this.$.components.api);
@@ -214,54 +270,12 @@ export default {
         console.log("eeeerror");
       }
     },
-    async previewFiles(event) {
-      let that = this;
-      that.imgList = [];
-      var oFReader = new FileReader();
-      oFReader.readAsDataURL(event.target.files[0]);
-      oFReader.onload = function (oFREvent) {
-        let image = new Image();
-        image.src = oFREvent.target.result;
-        image.onload = function () {
-          let src = that.resizeImage(image);
-          that.imgList.push(src);
-        };
-      };
-    },
-    dataUriToBlob(dataURI) {
-      var byteString = atob(dataURI.split(",")[1]);
-      var mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-      var ab = new ArrayBuffer(byteString.length);
-      var ia = new Uint8Array(ab);
-      for (var i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-      }
-      var blob = new Blob([ab], { type: mimeString });
-      return blob;
-    },
-    resizeImage(image) {
-      console.log("resizeImages");
-      let canvas = document.createElement("canvas"),
-        max_size = 300,
-        // 최대 기준을 1280으로 잡음.
-        width = image.width,
-        height = image.height;
-      if (width > height) {
-        if (width > max_size) {
-          height *= max_size / width;
-          width = max_size;
-        }
+    toggleSelectAll() {
+      if (this.isAllSelected) {
+        this.selectedMembers = [];
       } else {
-        if (height > max_size) {
-          width *= max_size / height;
-          height = max_size;
-        }
+        this.selectedMembers = [...this.sortedMembers];
       }
-      canvas.width = width;
-      canvas.height = height;
-      canvas.getContext("2d").drawImage(image, 0, 0, width, height);
-      const dataUrl = canvas.toDataURL("image/jpeg");
-      return dataUrl;
     },
     getTime(t) {
       let time = new Date(t);
@@ -278,21 +292,20 @@ export default {
         date = `0${date}`;
       }
       return `${year}/${month}/${date} (${weekday})`;
-
     },
-    async getAllFutsalUser(){               
-      let res = await this.$.components.api.getAllFutsalUser()
-      if(res.status == 200){
-        console.log("@@@@@",res.data.data)
-        this.memberList = res.data.data        
-        console.log("get futsal list success!!!", this.memberList)
-      }else{
-          console.error(res)          
-        }
+    async getAllFutsalUser() {
+      let res = await this.$.components.api.getAllFutsalUser();
+      if (res.status == 200) {
+        console.log("@@@@@", res.data.data);
+        this.memberList = res.data.data;
+        console.log("get futsal list success!!!", this.memberList);
+      } else {
+        console.error(res);
+      }
     },
   },
   async mounted() {
-    this.getAllFutsalUser()
+    this.getAllFutsalUser();
   },
 };
 </script>
@@ -395,11 +408,35 @@ export default {
   color: #007bff;
   font-weight: 700;
 }
-.member-list > div{
-  margin-bottom:4vw;
+.member-list > div {
+  margin-bottom: 4vw;
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-  padding:1vw;
+  padding: 1vw;
+}
+.sort-buttons {
+  display: flex;
+  gap: 4vw;
+}
 
+.sort-buttons button {
+  padding: 6px 12px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.sort-buttons button:hover {
+  background-color: #e6e6e6;
+  border-color: #aaa;
+}
+
+.sort-buttons button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
 }
 
 </style>

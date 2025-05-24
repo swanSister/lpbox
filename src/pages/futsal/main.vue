@@ -1,32 +1,25 @@
 <template>
   <div>
     <mainHeader/>
-   
-    <div class="input-content">
-      <span class="icon icon-search"></span>
-      <select class="search-list" v-model="searchOption">
-        <option value="name">제목</option>
-        <option value="singer">가수</option>
-        <option value="genre">장르</option>
-      </select>
-      <select v-if="searchOption=='genre'" class="genre-list" v-model="searchGenreOption" @change="searchGenre()">
-        <option value="none" selected="selected">=== 선택 ===</option>
-        <option value="KOREAN">한국노래</option>
-        <option value="JAZZ_BLUES">재즈&블루스</option>
-        <option value="POP">팝</option>
-        <option value="HIPHOP">힙합</option>
-        <option value="RNB_SOUL">R&B 소울</option>
-        <option value="ROCK">락</option>
-        <option value="OST">O.S.T</option>
-        <option value="ETC">기타</option>
-      </select>
-      <input v-if="searchOption!='genre'" @keypress="onKeyPress" v-model="keyword" placeholder="검색어를 입력해 주세요.">
-      <span v-show="isSearched" @click ="resetList" class="icon icon-cancel"></span>
-    </div>
-      
+  
       <div class="futsal-list">
         <div v-if="futsalList.length>0" class="count">{{ futsalList.length }}개</div>
-        <li v-for="item in futsalList" :key="item.lpId">
+        <li>
+          <div class="card" >
+            <div class="content">
+              <div>
+                <span class="title"> 정렬</span>
+                <div class="sort-buttons">
+                  <button @click="changeSort('name')">이름순</button>
+                  <button @click="changeSort('createdAt')">등록일순</button>
+                  <button @click="changeSort('age')">나이순</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li v-for="item in futsalList" :key="item.lpId"  
+        @click="confirmDelete(item.futsalId)">
           <div class="card" >
             <div class="content">
               <div>
@@ -38,9 +31,9 @@
                 <span>{{getTime(item.futsalDate)}}</span>
               </div>
               <div>
-                <span class="title">참석인원</span>
+                <span class="title">참석</span>
                 <div class="member-list">
-                  <div v-for="member in item.memberList" :key="member.id" class="member-item">
+                  <div v-for="member in getSortedMembers(item.memberList)" :key="member.id" class="member-item">
 
                     - {{ member.name }}/{{ member.age }}/{{ member.location }}
                   </div>
@@ -73,6 +66,8 @@ export default {
      searchOption:'name',
      isSearched:false,
      searchGenreOption:'=== 선택 ===',
+     sortKey: 'name',
+      sortOrder: 'asc',
     }
   },
   methods:{
@@ -83,10 +78,13 @@ export default {
         
 
         this.futsalList = res.data.data
-        this.futsalList.forEach(item => {
+        if(this.futsalList && this.futsalList.length>0){
+          this.futsalList.forEach(item => {
           item.memberList = JSON.parse(item.memberList)
         })
-        if(!this.futsalList) this.futsalList = []
+        }else{
+          this.futsalList = []
+        }
         
         this.futsalList_org = JSON.parse(JSON.stringify(this.futsalList))
         console.log("get futsal list success!!!", this.futsalList)
@@ -97,22 +95,16 @@ export default {
           
         }
     },
-    checkLogin(back){
-      if(!this.user.isAuth){
-        let pw = prompt(`ID:${this.user.id} 비밀번호를 입력하세요`,'')
-        if(pw==this.user.pw){
-          this.user.isAuth = true
-          window.localStorage.setItem('user',JSON.stringify(this.user))
-          return true
-        }else{
-          alert("비밀번호가 틀렸습니다.")
-          if(!back){
-            this.$router.go(-1)
-          }
-          return false
+    async confirmDelete(id) {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        let writingRes = await this.$.components.api.deleteFutsal({
+          futsalId: id,
+        });
+        if (writingRes.status == 200) {
+          this.getAllFutsalList();
+        } else {
+          console.error(writingRes);
         }
-      }else{
-        return true
       }
     },
     getTime(t){
@@ -164,7 +156,30 @@ export default {
       this.searchGenreOption = ''
       this.futsalList = JSON.parse(JSON.stringify(this.futsalList_org))
     },
+    changeSort(key) {
+      if (this.sortKey === key) {
+        this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortKey = key;
+        this.sortOrder = 'asc';
+      }
+    },
+    getSortedMembers(members) {
+      const modifier = this.sortOrder === 'asc' ? 1 : -1;
+      return [...members].sort((a, b) => {
+        const key = this.sortKey;
 
+        if (key === 'createdAt') {
+          return modifier * (a.createdAt - b.createdAt); // timestamp 비교
+        }
+
+        if (typeof a[key] === 'string') {
+          return modifier * a[key].localeCompare(b[key]);
+        }
+
+        return modifier * (a[key] - b[key]);
+      });
+    }
   },
   mounted(){
     this.getAllFutsalList()
