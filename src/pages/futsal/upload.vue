@@ -312,7 +312,7 @@ export default {
 <style scoped>
 .input-list {
   color: rgb(0, 0, 0);
-  font-size: 6vw;
+  font-size: 5vw;
   display: flex;
   flex-direction: column;
   margin: 1vw 4vw;
@@ -349,9 +349,10 @@ export default {
 .send-btn {
   color: white;
   text-align: center;
-  margin: 10vw;
+  margin:0 10vw;
+  border-radius: 10px;
   padding: 2vw 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: #007bff;
   font-size: 4vw;
   justify-content: center;
 }
@@ -389,7 +390,9 @@ export default {
   display: flex;
   flex-direction: column;
 }
-
+.member-list label {
+  margin: 1vw 0;
+}
 .tab-container {
   display: flex;
   margin-bottom: 16px;
@@ -413,30 +416,24 @@ export default {
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
   padding: 1vw;
 }
-.sort-buttons {
-  display: flex;
-  gap: 4vw;
-}
-
-.sort-buttons button {
-  padding: 6px 12px;
-  background-color: #f2f2f2;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.sort-buttons button, .select-controls button {
+  background-color: #4a90e2;    /* 부드러운 파란색 */
+  color: white;                 /* 글자 하얀색 */
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  margin-right: 10px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s, border-color 0.2s;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
-.sort-buttons button:hover {
-  background-color: #e6e6e6;
-  border-color: #aaa;
+.sort-buttons button:hover, .select-controls button:hover {
+  background-color: #357abd;   /* 진한 파란색으로 호버 */
 }
 
-.sort-buttons button.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
+.sort-buttons button:focus, .select-controls button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(53, 122, 189, 0.5);
 }
-
 </style>
