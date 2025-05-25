@@ -28,6 +28,8 @@
           <option value="none" selected="selected">=== 선택 ===</option>
           <option value="용산 아디다스 더베이스">용산 아디다스 더베이스</option>
           <option value="잠실 로꼬풋살장">잠실 로꼬 풋살장</option>
+          <option value="마곡 어반풋볼파크 강서점">마곡 어반풋볼파크 강서점</option>
+          <option value="광명 쌈바풋살장">광명 쌈바풋살장</option>
         </select>
       </div>
       <div class="title-box">
@@ -189,7 +191,13 @@ export default {
     },
     async uploadFutsal() {
       this.futsalId = this.generateUID();
-      console.log("######", this.$.components.api);
+      const date = new Date(this.futsalDate);
+
+      const kstDate = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+      const yyyy = kstDate.getFullYear();
+      const mm = String(kstDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(kstDate.getDate()).padStart(2, '0');
+      this.futsalDate = `${yyyy}-${mm}-${dd}`;            
       if (this.futsalDate == "") {
         alert("날짜를 입력해 주세요.");
         return;
@@ -206,12 +214,9 @@ export default {
         memberList: JSON.stringify(this.selectedMembers),
       });
       if (writingRes.status == 200) {
-        console.log("success!!!");
         this.$router.go(-1);
       } else {
-        console.log("fail!!");
         console.error(writingRes);
-        console.log("eeeerror");
       }
     },
     changeSort(key) {
@@ -310,19 +315,33 @@ export default {
 };
 </script>
 <style scoped>
+:root {
+  --color-main: #003366;
+  --color-accent: #3399ff;
+  --color-subtle-bg: #e6f2ff;
+  --color-hover: #b3d1ff;
+  --color-title: #004080;
+  --color-border: rgba(0, 0, 0, 0.5);
+  --color-shadow: rgba(51, 153, 255, 0.4);
+}
+
+/* 📥 입력 리스트 */
 .input-list {
-  color: rgb(0, 0, 0);
+  color: var(--color-main);
   font-size: 5vw;
   display: flex;
   flex-direction: column;
   margin: 1vw 4vw;
 }
+
 .input-list .title-box {
   margin: 4vw 0;
 }
+
 .input-list > div {
   display: flex;
 }
+
 .input-list > div.more-btn {
   color: white;
   justify-content: center;
@@ -331,68 +350,79 @@ export default {
   padding: 1vw 0;
   font-size: 4vw;
 }
+
 .input-list > div > .title {
   min-width: 30vw;
   max-width: 30vw;
-  border-right: 0.5px solid rgba(0, 0, 0, 0.5);
+  border-right: 0.5px solid var(--color-border);
   margin-right: 2vw;
 }
+
 .input-list > div > .location-list,
 .input-list > div > .price-list {
-  border: 0.5px solid rgba(0, 0, 0, 0.5);
+  border: 0.5px solid var(--color-border);
   flex-grow: 1;
 }
+
 .input-list > div input {
-  border: 0.5px solid rgba(0, 0, 0, 0.5);
+  border: 0.5px solid var(--color-border);
   flex-grow: 1;
 }
-.send-btn {
-  color: white;
-  text-align: center;
-  margin:0 10vw;
-  border-radius: 10px;
-  padding: 2vw 0;
-  background-color: #007bff;
-  font-size: 4vw;
-  justify-content: center;
-}
+
 .input-list .desc {
-  border: 0.5px solid rgba(0, 0, 0, 0.5);
+  border: 0.5px solid var(--color-border);
   min-height: 30vw;
 }
+
+/* 📅 날짜 피커 */
 .date-picker {
   position: absolute;
   right: 4vw;
 }
+
 .release-date {
   min-width: 50vw;
 }
+
+/* 📷 이미지 입력 */
 .img-input {
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .img-input .icon-camera {
   font-size: 8vw;
   text-align: center;
 }
+
 .img-input > img {
   min-width: 50vw;
   max-width: 50vw;
   min-height: 50vw;
   max-height: 50vw;
   margin-left: 10vw;
-
   object-fit: cover;
-  border: 0.5px solid rgba(0, 0, 0, 0.5);
+  border: 0.5px solid var(--color-border);
 }
+
+/* 👥 멤버 리스트 */
 .member-list {
   display: flex;
   flex-direction: column;
 }
+
 .member-list label {
   margin: 1vw 0;
 }
+
+.member-list > div {
+  margin-bottom: 4vw;
+  border-bottom: 1px solid var(--color-border);
+  padding: 1vw;
+}
+
+/* 📑 탭 컨트롤 */
 .tab-container {
   display: flex;
   margin-bottom: 16px;
@@ -407,18 +437,28 @@ export default {
 }
 
 .tab.active {
-  border-bottom: 2px solid #007bff;
-  color: #007bff;
+  border-bottom: 2px solid var(--color-accent);
+  color: var(--color-accent);
   font-weight: 700;
 }
-.member-list > div {
-  margin-bottom: 4vw;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-  padding: 1vw;
+
+/* 📤 전송 버튼 */
+.send-btn {
+  color: white;
+  text-align: center;
+  margin: 0 10vw;
+  border-radius: 10px;
+  padding: 2vw 0;
+  background-color: var(--color-accent);
+  font-size: 4vw;
+  justify-content: center;
 }
-.sort-buttons button, .select-controls button {
-  background-color: #4a90e2;    /* 부드러운 파란색 */
-  color: white;                 /* 글자 하얀색 */
+
+/* 🔘 버튼 (정렬, 선택) 공통 스타일 */
+.sort-buttons button,
+.select-controls button {
+  background-color: var(--color-accent);
+  color: white;
   border: none;
   border-radius: 6px;
   padding: 8px 16px;
@@ -428,12 +468,15 @@ export default {
   transition: background-color 0.3s ease;
 }
 
-.sort-buttons button:hover, .select-controls button:hover {
-  background-color: #357abd;   /* 진한 파란색으로 호버 */
+.sort-buttons button:hover,
+.select-controls button:hover {
+  background-color: #357abd;
 }
 
-.sort-buttons button:focus, .select-controls button:focus {
+.sort-buttons button:focus,
+.select-controls button:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(53, 122, 189, 0.5);
 }
+
 </style>
