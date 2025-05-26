@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 10vh;">
     <mainHeader />
     <section class="tab-container">
       <div

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 10vh;">
     <mainHeader />
     <div class="calendar-wrapper">
       <vue-cal
