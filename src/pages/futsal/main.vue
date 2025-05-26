@@ -108,6 +108,7 @@ export default {
   },
   data() {
     return {
+      password: '', // 사용자 입력 비밀번호
       selectedItems: null,
       futsalList: [],
       memberList:[],
@@ -123,6 +124,20 @@ export default {
     };
   },
   methods: {
+    async ensurePassword() {
+      if (!this.password) {
+        const inputPassword = prompt("관리자 비밀번호를 입력하세요:");
+        if (inputPassword === '3003') {
+          this.password = inputPassword;
+          localStorage.setItem("futsalPassword", inputPassword);
+          return true;
+        } else {
+          alert("비밀번호가 틀렸습니다.");
+          return false;
+        }
+      }
+      return true;
+    },
     formatKoreanMonthYear(date) {
       date = this.currentStartDate
       const year = date.getFullYear();
@@ -194,6 +209,9 @@ export default {
       this.kickedList = kickedList;
     },
     async confirmDelete(id) {
+      const proceed = await this.ensurePassword();
+      if (!proceed) return;
+
       if (confirm("정말 삭제하시겠습니까?")) {
         let writingRes = await this.$.components.api.deleteFutsal({
           futsalId: id,
@@ -273,6 +291,7 @@ export default {
     }
   },
   async mounted() {
+    this.password = localStorage.getItem("futsalPassword") || '';
     await this.getAllFutsalUser()
     await this.getAllFutsalList()
     
