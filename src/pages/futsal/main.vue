@@ -126,7 +126,7 @@ export default {
   methods: {
     async ensurePassword() {
       if (!this.password) {
-        const inputPassword = prompt("관리자 비밀번호를 입력하세요:");
+        const inputPassword = prompt("종신이는 비밀번호를 입력하세요:");
         if (inputPassword === '3003') {
           this.password = inputPassword;
           localStorage.setItem("futsalPassword", inputPassword);

@@ -13,7 +13,7 @@ export default {
       const savedPassword = localStorage.getItem("futsalPassword");
       if (savedPassword === '3003') return true;
 
-      const input = prompt("관리자 비밀번호를 입력하세요:");
+      const input = prompt("종신이는 비밀번호를 입력하세요:");
       if (input === '3003') {
         localStorage.setItem("futsalPassword", input);
         return true;
