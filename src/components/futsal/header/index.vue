@@ -10,12 +10,12 @@
 export default {
   methods: {
     async ensurePassword() {
-      const savedPassword = localStorage.getItem("futsalPassword");
+      const savedPassword = sessionStorage.getItem("futsalPassword");
       if (savedPassword === '3003') return true;
 
       const input = prompt("종신이는 비밀번호를 입력하세요:");
       if (input === '3003') {
-        localStorage.setItem("futsalPassword", input);
+        sessionStorage.setItem("futsalPassword", input);
         return true;
       } else {
         alert("비밀번호가 틀렸습니다.");

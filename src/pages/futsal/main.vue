@@ -129,7 +129,7 @@ export default {
         const inputPassword = prompt("종신이는 비밀번호를 입력하세요:");
         if (inputPassword === '3003') {
           this.password = inputPassword;
-          localStorage.setItem("futsalPassword", inputPassword);
+          sessionStorage.setItem("futsalPassword", inputPassword);
           return true;
         } else {
           alert("비밀번호가 틀렸습니다.");
@@ -291,7 +291,7 @@ export default {
     }
   },
   async mounted() {
-    this.password = localStorage.getItem("futsalPassword") || '';
+    this.password = sessionStorage.getItem("futsalPassword") || '';
     await this.getAllFutsalUser()
     await this.getAllFutsalList()
     
