@@ -46,45 +46,13 @@
 export default {
   data () {
     return {
-      projects: [
-  { 
-    id: 'asasa', 
-    title: '아사사', 
-    year: '2022~2023', 
-    desc: '아파트 주민 전용 웹앱, Blind 모방 서비스. 주소지 인증 기반. 기획자와 2인 창업', 
-    stack: 'Vue.js, Node.js, SQLite', 
-    role: '프론트/백엔드 설계 및 전체 개발'
-  },
+      projects:[
   { 
     id: 'futsal', 
     title: 'FC 우왕좌왕', 
     year: '2025', 
     desc: '풋살 소모임 전용 회원 관리 및 경기 기록장', 
     stack: 'Vue.js, Node.js', 
-    role: '풀스택 개발'
-  },
-  { 
-    id: 'lpbox', 
-    title: 'LP BOX', 
-    year: '2024', 
-    desc: 'LP 커버 이미지 AI 인식 → 제목/아티스트 추출 서비스', 
-    stack: 'Vue.js, Google Vision API, HuggingFace', 
-    role: '백엔드/프론트엔드 개발'
-  },
-  { 
-    id: 'mars', 
-    title: 'NASA Mars Rovers', 
-    year: '2020', 
-    desc: 'NASA API 기반 화성 탐사 로버 사진 뷰어', 
-    stack: 'Vue.js 2.0', 
-    role: '프론트엔드 개발'
-  },
-  { 
-    id: 'arido', 
-    title: '아리도 게임', 
-    year: '2024', 
-    desc: '스프런키 오마주, 딸을 위해 만든 Unity WebGL 게임', 
-    stack: 'Unity WebGL, Vue.js, Node.js', 
     role: '풀스택 개발'
   },
   { 
@@ -96,6 +64,38 @@ export default {
     role: '풀스택 개발'
   },
   { 
+    id: 'lpbox', 
+    title: 'LP BOX', 
+    year: '2024 (개발 중)', 
+    desc: 'LP 커버 이미지 AI 인식 → 제목/아티스트 추출 서비스. 구글 Vision API와 HuggingFace 모델을 활용한 AI 프로젝트', 
+    stack: 'Vue.js, Node.js, Google Vision API, HuggingFace', 
+    role: '백엔드/프론트엔드 개발, AI 스택 적용'
+  },
+  { 
+    id: 'arido', 
+    title: '아리도 게임', 
+    year: '2024', 
+    desc: '스프런키 오마주, 딸을 위해 만든 Unity WebGL 게임', 
+    stack: 'Unity WebGL, Vue.js, Node.js', 
+    role: '풀스택 개발'
+  },
+  { 
+    id: 'asasa', 
+    title: '아사사', 
+    year: '2022~2023', 
+    desc: '아파트 주민 전용 웹앱, Blind 모방 서비스. 주소지 인증 기반. 기획자와 2인 창업', 
+    stack: 'Vue.js, Node.js, SQLite', 
+    role: '프론트/백엔드 설계 및 전체 개발'
+  },
+  { 
+    id: 'mars', 
+    title: 'NASA Mars Rovers', 
+    year: '2020', 
+    desc: 'NASA API 기반 화성 탐사 로버 사진 뷰어', 
+    stack: 'Vue.js 2.0', 
+    role: '프론트엔드 개발'
+  },
+  { 
     id: 'kakaogame', 
     title: '카카오게임', 
     year: '2020', 
@@ -103,8 +103,8 @@ export default {
     stack: 'HTML, JavaScript', 
     role: '프론트엔드 개발'
   }
-
 ]
+
     }
   },
   methods:{
